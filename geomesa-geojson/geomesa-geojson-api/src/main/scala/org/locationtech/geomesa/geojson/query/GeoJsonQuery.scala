@@ -60,6 +60,19 @@ object GeoJsonQuery {
   /**
     * Parse a query string
     *
+    * @param jsonValue
+    * @return
+    */
+  def apply(jsonValue: JValue): GeoJsonQuery = {
+    jsonValue match {
+      case j: JObject => evaluate(j)
+      case _ => throw new IllegalArgumentException("Invalid input - expected JSON object")
+    }
+  }
+
+  /**
+    * Parse a query string
+    *
     * @param query query string
     * @return
     */
@@ -69,10 +82,7 @@ object GeoJsonQuery {
 
     if (query == null || query.isEmpty) { Include } else {
       try {
-        parse(query) match {
-          case j: JObject => evaluate(j)
-          case _ => throw new IllegalArgumentException("Invalid input - expected JSON object")
-        }
+        apply(parse(query))
       } catch {
         case NonFatal(e) => throw new IllegalArgumentException(s"Invalid query string:\n$query", e)
       }
