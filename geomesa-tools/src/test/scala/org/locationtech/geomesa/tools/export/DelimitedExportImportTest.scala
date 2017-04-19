@@ -30,14 +30,14 @@ import scala.collection.JavaConverters._
 @RunWith(classOf[JUnitRunner])
 class DelimitedExportImportTest extends Specification {
 
-  val dt1 = GeoToolsDateFormat.parseDateTime("2016-01-01T00:00:00.000Z").toDate
-  val dt2 = GeoToolsDateFormat.parseDateTime("2016-01-02T00:00:00.000Z").toDate
+  val dt1 = java.util.Date.from(java.time.LocalDateTime.parse("2016-01-01T00:00:00.000Z", GeoToolsDateFormat).toInstant(java.time.ZoneOffset.UTC))
+  val dt2 = java.util.Date.from(java.time.LocalDateTime.parse("2016-01-02T00:00:00.000Z", GeoToolsDateFormat).toInstant(java.time.ZoneOffset.UTC))
   val pt1 = WKTUtils.read("POINT(1 0)")
   val pt2 = WKTUtils.read("POINT(0 2)")
 
   def export(features: SimpleFeatureCollection, format: DataFormat): String = {
     val writer = new StringWriter()
-    val export = new DelimitedExporter(writer, format)
+    val export = new DelimitedExporter(writer, format, None, true)
     export.export(features)
     export.close()
     writer.toString

@@ -16,6 +16,7 @@ import org.locationtech.geomesa.utils.text.BasicParser
 import org.opengis.feature.simple.SimpleFeatureType
 import org.parboiled.errors.{ErrorUtils, ParsingException}
 import org.parboiled.scala._
+import org.parboiled.scala.rules.Rule1
 
 import scala.reflect.ClassTag
 
@@ -62,12 +63,21 @@ private class StatParser extends BasicParser {
   import StatParser.{getIndex, sft}
 
   // main parsing rule
-  def stat: Rule1[Stat] = rule {
-    oneOrMore(singleStat, ";") ~~> { s => if (s.length == 1) s.head else new SeqStat(s) } ~ EOI
+  def stat: Rule1[Stat] = rule { stats ~ EOI }
+
+  private def stats: Rule1[Stat] = rule {
+    oneOrMore(singleStat, ";") ~~> { s => if (s.length == 1) s.head else new SeqStat(s) }
+  }
+
+  private def groupBy: Rule1[Stat] = rule {
+    "GroupBy(" ~ string ~ "," ~ (stats ~> { s => s }) ~ ")" ~~> { (attribute, _, groupedStats) =>
+      new GroupBy(getIndex(attribute), groupedStats, sft)
+    }
   }
 
   private def singleStat: Rule1[Stat] = rule {
-    count | minMax | iteratorStack | enumeration | topK | histogram | frequency | z3Histogram | z3Frequency
+    count | minMax | groupBy | descriptiveStats | enumeration | topK | histogram |
+        frequency | z3Histogram | z3Frequency | iteratorStack
   }
 
   private def count: Rule1[Stat] = rule {
@@ -99,6 +109,13 @@ private class StatParser extends BasicParser {
       val index = getIndex(attribute)
       val binding = sft.getDescriptor(attribute).getType.getBinding
       new TopK[Any](index)(ClassTag(binding))
+    }
+  }
+
+  private def descriptiveStats: Rule1[Stat] = rule {
+    "DescriptiveStats(" ~ string ~ ")" ~~> { attributes =>
+      val indices = attributes.split(",").map(getIndex)
+      new DescriptiveStats(indices)
     }
   }
 

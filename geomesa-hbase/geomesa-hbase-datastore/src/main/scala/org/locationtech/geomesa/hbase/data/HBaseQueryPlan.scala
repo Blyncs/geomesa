@@ -8,15 +8,19 @@
 
 package org.locationtech.geomesa.hbase.data
 
+import com.google.common.collect.Lists
 import org.apache.hadoop.hbase.TableName
 import org.apache.hadoop.hbase.client._
+import org.apache.hadoop.hbase.filter.MultiRowRangeFilter.RowRange
+import org.apache.hadoop.hbase.filter.{FilterList, MultiRowRangeFilter, Filter => HBaseFilter}
 import org.locationtech.geomesa.hbase.utils.HBaseBatchScan
 import org.locationtech.geomesa.hbase.{HBaseFilterStrategyType, HBaseQueryPlanType}
 import org.locationtech.geomesa.index.utils.Explainer
 import org.locationtech.geomesa.utils.collection.{CloseableIterator, SelfClosingIterator}
 import org.opengis.feature.simple.SimpleFeature
 
-sealed trait HBaseQueryPlan extends HBaseQueryPlanType {
+
+trait HBaseQueryPlan extends HBaseQueryPlanType {
   def filter: HBaseFilterStrategyType
   def table: TableName
   def ranges: Seq[Query]
@@ -57,6 +61,7 @@ case class ScanPlan(filter: HBaseFilterStrategyType,
                     ranges: Seq[Scan],
                     resultsToFeatures: Iterator[Result] => Iterator[SimpleFeature]) extends HBaseQueryPlan {
   override def scan(ds: HBaseDataStore): CloseableIterator[SimpleFeature] = {
+    ranges.foreach(ds.applySecurity)
     val results = new HBaseBatchScan(ds.connection, table, ranges, ds.config.queryThreads, 100000)
     SelfClosingIterator(resultsToFeatures(results), results.close)
   }
@@ -65,9 +70,17 @@ case class ScanPlan(filter: HBaseFilterStrategyType,
 case class GetPlan(filter: HBaseFilterStrategyType,
                    table: TableName,
                    ranges: Seq[Get],
+                   remoteFilters: Seq[HBaseFilter] = Nil,
                    resultsToFeatures: Iterator[Result] => Iterator[SimpleFeature]) extends HBaseQueryPlan {
+  // TODO: do we need to push down Z3Iterator?
   override def scan(ds: HBaseDataStore): CloseableIterator[SimpleFeature] = {
     import scala.collection.JavaConversions._
+    val filterList = new FilterList()
+    remoteFilters.foreach { filter => filterList.addFilter(filter) }
+    ranges.foreach { range =>
+      range.setFilter(filterList)
+      ds.applySecurity(range)
+    }
     val get = ds.connection.getTable(table)
     SelfClosingIterator(resultsToFeatures(get.get(ranges).iterator), get.close)
   }

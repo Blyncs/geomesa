@@ -3,7 +3,7 @@
     <parent>
         <artifactId>geomesa_2.11</artifactId>
         <groupId>org.locationtech.geomesa</groupId>
-        <version>1.3.1</version>
+        <version>1.3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -11,7 +11,7 @@
     <name>GeoMesa HBase Parent</name>
 
     <properties>
-        <bigtable.version>0.9.4</bigtable.version>
+        <bigtable.version>0.9.6.1</bigtable.version>
     </properties>
 
     <dependencyManagement>
@@ -38,6 +38,7 @@
     <modules>
         <module>geomesa-hbase-datastore</module>
         <module>geomesa-hbase-dist</module>
+        <module>geomesa-hbase-distributed-runtime</module>
         <module>geomesa-hbase-gs-plugin</module>
         <module>geomesa-hbase-tools</module>
         <module>geomesa-hbase-spark</module>
@@ -52,6 +53,8 @@
                 <module>geomesa-bigtable-dist</module>
                 <module>geomesa-bigtable-gs-plugin</module>
                 <module>geomesa-bigtable-tools</module>
+                <module>geomesa-bigtable-spark</module>
+                <module>geomesa-bigtable-spark-runtime</module>
             </modules>
         </profile>
     </profiles>

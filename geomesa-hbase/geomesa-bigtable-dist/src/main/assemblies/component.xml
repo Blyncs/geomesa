@@ -33,8 +33,19 @@
             <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <includes>
-                <include>org.locationtech.geomesa:geomesa-hbase-spark*</include>
+                <include>org.locationtech.geomesa:geomesa-bigtable-spark*</include>
                 <include>org.locationtech.geomesa:geomesa-spark*</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>dist/converters</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>org.locationtech.geomesa:geomesa-tools*:jar:data</include>
             </includes>
         </dependencySet>
     </dependencySets>

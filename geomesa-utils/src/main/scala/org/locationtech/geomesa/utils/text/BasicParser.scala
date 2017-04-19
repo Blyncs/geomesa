@@ -1,5 +1,5 @@
 /***********************************************************************
-* Copyright (c) 2013-2016 Commonwealth Computer Research, Inc.
+* Copyright (c) 2013-2017 Commonwealth Computer Research, Inc.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Apache License, Version 2.0
 * which accompanies this distribution and is available at
@@ -12,6 +12,7 @@ import java.util.regex.Pattern
 
 import org.apache.commons.lang.StringEscapeUtils
 import org.parboiled.scala._
+import org.parboiled.scala.rules.Rule1
 
 /**
   * Base class for parboiled parsers that provides methods for string and number matching
