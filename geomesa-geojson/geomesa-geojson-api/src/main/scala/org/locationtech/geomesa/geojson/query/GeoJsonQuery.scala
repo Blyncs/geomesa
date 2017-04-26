@@ -137,6 +137,11 @@ object GeoJsonQuery {
         // { "$within" : { "$geometry" : { "type" : "Polygon", "coordinates": [ [ [0,0], [3,6], [6,1], [0,0] ] ] } } }
         Within(path, evaluateGeometry(v))
 
+      case Some(("$dwithin", v: JObject)) =>
+        // { "$dwithin" : { "$geometry" : { "type" : "Point", "coordinates" : [30, 10] }, "$dist" : 100.50, "$unit" : "feet" } }
+        val (dist, unit) = evaluateDwithin(v)
+        Dwithin(path, evaluateGeometry(v), dist, unit)
+
       case Some(("$contains", v: JObject)) =>
         // { "$contains" : { "$geometry" : { "type" : "Point", "coordinates" : [30, 10] } } }
         Contains(path, evaluateGeometry(v))
@@ -178,6 +183,28 @@ object GeoJsonQuery {
       throw new IllegalArgumentException(s"Expected $$geometry, got ${json.obj.map(_._1).mkString(", ")}")
     }
     jsonGeometry.read(compact(render(geom)))
+  }
+
+  /**
+    * Read a json geometry object:
+    * { "$geometry" : { "type" : "Point", "coordinates" : [30, 10] } }
+    *
+    * @param json geometry object
+    * @return
+    */
+  private def evaluateDwithin(json: JObject): (Double, String) = {
+    import org.json4s._
+    import org.json4s.native.JsonMethods._
+    implicit val formats = DefaultFormats
+    val distance = json.obj.find(_._1 == "$dist").map(_._2).getOrElse {
+      throw new IllegalArgumentException(s"Expected $$dist, got ${json.obj.map(_._1).mkString(", ")}")
+    }.extract[Double]
+
+    val unit = json.obj.find(_._1 == "$unit").map(_._2).getOrElse {
+      throw new IllegalArgumentException(s"Expected $$unit, got ${json.obj.map(_._1).mkString(", ")}")
+    }.extract[String]
+
+    (distance, unit)
   }
 
   /**
@@ -298,7 +325,7 @@ object GeoJsonQuery {
     override def toFilter(idPath: Option[Seq[PathElement]], dtgPath: Option[Seq[PathElement]]): Filter =
       ff.dwithin(filterAttribute(path,None), ff.literal(geometry), distance, units)
     override def toString =
-      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}, $distance, "$units"}}"""
+      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}, "$$distance":$distance, "$$unit":"$units"}}"""
   }
 
   object Dwithin{
