@@ -298,7 +298,7 @@ object GeoJsonQuery {
     override def toFilter(idPath: Option[Seq[PathElement]], dtgPath: Option[Seq[PathElement]]): Filter =
       ff.dwithin(filterAttribute(path,None), ff.literal(geometry), distance, units)
     override def toString =
-      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}}}"""
+      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}, $distance, "$units"}}"""
   }
 
   object Dwithin{
