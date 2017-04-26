@@ -318,14 +318,14 @@ object GeoJsonQuery {
     *
     * @param path property to evaluate
     * @param geometry geometry to compare with property value
-    * @param distance the max distance between geometries
+    * @param dist the max distance between geometries
     * @param units the units of distance (feet, meters, statute miles, kilometers)
     */
-  case class Dwithin(path: Seq[PathElement], geometry: Geometry, distance: Double, units: String) extends GeoJsonQuery {
+  case class Dwithin(path: Seq[PathElement], geometry: Geometry, dist: Double, units: String) extends GeoJsonQuery {
     override def toFilter(idPath: Option[Seq[PathElement]], dtgPath: Option[Seq[PathElement]]): Filter =
-      ff.dwithin(filterAttribute(path,None), ff.literal(geometry), distance, units)
+      ff.dwithin(filterAttribute(path,None), ff.literal(geometry), dist, units)
     override def toString =
-      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}, "$$distance":$distance, "$$unit":"$units"}}"""
+      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}, "$$dist":$dist, "$$unit":"$units"}}"""
   }
 
   object Dwithin{
