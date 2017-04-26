@@ -286,6 +286,29 @@ object GeoJsonQuery {
     def apply(path: String, geometry: Geometry): Contains = Contains(JsonPathParser.parse(path), geometry)
   }
 
+  /*
+    * Spatial dwithin
+    *
+    * @param path property to evaluate
+    * @param geometry geometry to compare with property value
+    * @param distance the max distance between geometries
+    * @param units the units of distance (feet, meters, statute miles, kilometers)
+    */
+  case class Dwithin(path: Seq[PathElement], geometry: Geometry, distance: Double, units: String) extends GeoJsonQuery {
+    override def toFilter(idPath: Option[Seq[PathElement]], dtgPath: Option[Seq[PathElement]]): Filter =
+      ff.dwithin(filterAttribute(path,None), ff.literal(geometry), distance, units)
+    override def toString =
+      s"""{"${JsonPathParser.print(path, dollar = false)}":{"$$dwithin":${printJson(geometry)}}}"""
+  }
+
+  object Dwithin{
+    def apply(geometry: Geometry, distance: Double, units: String): Dwithin =
+      Dwithin(GeoJsonGeometryPath, geometry, distance, units)
+    def apply(path: String, geometry: Geometry, distance: Double, units: String): Dwithin =
+      Dwithin(JsonPathParser.parse(path), geometry, distance, units)
+  }
+
+
   /**
     * Spatial bounding box
     *
