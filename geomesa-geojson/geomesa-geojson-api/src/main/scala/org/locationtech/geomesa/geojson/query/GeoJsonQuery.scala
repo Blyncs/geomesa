@@ -313,7 +313,7 @@ object GeoJsonQuery {
     def apply(path: String, geometry: Geometry): Contains = Contains(JsonPathParser.parse(path), geometry)
   }
 
-  /*
+  /**
     * Spatial dwithin
     *
     * @param path property to evaluate
