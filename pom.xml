@@ -72,6 +72,7 @@
         <gdal.version>2.0.0</gdal.version>
         <json4s.version>3.2.11</json4s.version>
         <scalatra.version>2.3.0</scalatra.version>
+        <scala.version>2.11.8</scala.version>
 
         <!-- environment-dependent versions -->
         <!-- These are compiled and pass CQs and should be compatible with recommended versions -->
@@ -349,15 +350,20 @@
     </profiles>
 
     <distributionManagement>
-        <repository>
-            <id>repo.locationtech.org</id>
-            <name>GeoMesa Repository - Releases</name>
-            <url>https://repo.locationtech.org/content/repositories/geomesa-releases/</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>repo.locationtech.org</id>-->
+            <!--<name>GeoMesa Repository - Releases</name>-->
+            <!--<url>https://repo.locationtech.org/content/repositories/geomesa-releases/</url>-->
+        <!--</repository>-->
+        <!--<snapshotRepository>-->
+            <!--<id>repo.locationtech.org</id>-->
+            <!--<name>GeoMesa Repository - Snapshots</name>-->
+            <!--<url>https://repo.locationtech.org/content/repositories/geomesa-snapshots/</url>-->
+        <!--</snapshotRepository>-->
         <snapshotRepository>
-            <id>repo.locationtech.org</id>
-            <name>GeoMesa Repository - Snapshots</name>
-            <url>https://repo.locationtech.org/content/repositories/geomesa-snapshots/</url>
+            <id>blyncsy.repo</id>
+            <name>Artifactory Realm</name>
+            <url>https://syncu.blyncsy.com/artifactory/libs-snapshot-local</url>
         </snapshotRepository>
     </distributionManagement>
 
