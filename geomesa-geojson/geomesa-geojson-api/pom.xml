@@ -35,6 +35,11 @@
             <groupId>org.locationtech.geomesa</groupId>
             <artifactId>geomesa-feature-kryo_${scala.binary.version}</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
 
         <!-- provided deps -->
         <!--<dependency>-->
