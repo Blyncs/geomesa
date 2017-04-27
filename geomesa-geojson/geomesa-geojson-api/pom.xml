@@ -29,12 +29,8 @@
         </dependency>
         <dependency>
             <groupId>org.locationtech.geomesa</groupId>
-            <artifactId>geomesa-filter_${scala.binary.version}</artifactId>
+            <artifactId>geomesa-accumulo-datastore_${scala.binary.version}</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.locationtech.geomesa</groupId>-->
-            <!--<artifactId>geomesa-accumulo-datastore_${scala.binary.version}</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.locationtech.geomesa</groupId>
             <artifactId>geomesa-feature-kryo_${scala.binary.version}</artifactId>
@@ -46,10 +42,10 @@
         </dependency>
 
         <!-- provided deps -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.accumulo</groupId>-->
-            <!--<artifactId>accumulo-core</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.accumulo</groupId>
+            <artifactId>accumulo-core</artifactId>
+        </dependency>
 
         <!-- test deps -->
         <dependency>
