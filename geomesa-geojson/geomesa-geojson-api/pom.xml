@@ -27,9 +27,13 @@
             <groupId>org.parboiled</groupId>
             <artifactId>parboiled-scala_${scala.binary.version}</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.locationtech.geomesa</groupId>-->
+            <!--<artifactId>geomesa-accumulo-datastore_${scala.binary.version}</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.locationtech.geomesa</groupId>
-            <artifactId>geomesa-accumulo-datastore_${scala.binary.version}</artifactId>
+            <artifactId>geomesa-filter_${scala.binary.version}</artifactId>
         </dependency>
         <dependency>
             <groupId>org.locationtech.geomesa</groupId>
@@ -42,10 +46,10 @@
         </dependency>
 
         <!-- provided deps -->
-        <dependency>
-            <groupId>org.apache.accumulo</groupId>
-            <artifactId>accumulo-core</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.accumulo</groupId>-->
+            <!--<artifactId>accumulo-core</artifactId>-->
+        <!--</dependency>-->
 
         <!-- test deps -->
         <dependency>
