@@ -43,7 +43,7 @@ class HBaseDataStoreFactory extends DataStoreFactorySpi with LazyLogging {
     HBaseDataStoreFactory.configureSecurity(conf)
 
     logger.debug("Checking configuration availability.")
-    HBaseAdmin.checkHBaseAvailable(conf)
+//    HBaseAdmin.checkHBaseAvailable(conf)
 
     val ret = ConnectionFactory.createConnection(conf)
     Runtime.getRuntime.addShutdownHook(new Thread() {
@@ -86,9 +86,10 @@ class HBaseDataStoreFactory extends DataStoreFactorySpi with LazyLogging {
        Some(HBaseDataStoreFactory.buildAuthsProvider(connection, params))
       } else None
     val coprocessorUrl = CoprocessorUrl.lookupOpt[Path](params)
+    val doTableExistsCheck = DoTableExistsCheck.lookupWithDefault[Boolean](params)
 
     val config = HBaseDataStoreConfig(catalog, remoteFilters, generateStats, audit, queryThreads, queryTimeout,
-      maxRangesPerExtendedScan, looseBBox, caching, authsProvider, coprocessorUrl)
+      maxRangesPerExtendedScan, looseBBox, caching, authsProvider, coprocessorUrl, doTableExistsCheck)
     buildDataStore(connection, config)
   }
 
@@ -138,6 +139,7 @@ object HBaseDataStoreParams {
   val EnableSecurityParam  = new Param("security.enabled", classOf[java.lang.Boolean], "Enable HBase Security (Visibilities)", false, false)
   val AuthsParam           = org.locationtech.geomesa.security.AuthsParam
   val ForceEmptyAuthsParam = org.locationtech.geomesa.security.ForceEmptyAuthsParam
+  val DoTableExistsCheck   = new Param("bigtable.admin.hasAccess", classOf[java.lang.Boolean], "Check if table exists", false, true)
 
 }
 
@@ -162,7 +164,8 @@ object HBaseDataStoreFactory extends LazyLogging {
                                   looseBBox: Boolean,
                                   caching: Boolean,
                                   authProvider: Option[AuthorizationsProvider],
-                                  coprocessorUrl: Option[Path]) extends GeoMesaDataStoreConfig
+                                  coprocessorUrl: Option[Path],
+                                  doTableExistsCheck: Boolean) extends GeoMesaDataStoreConfig
 
   // check that the hbase-site.xml does not have bigtable keys
   def canProcess(params: java.util.Map[java.lang.String,Serializable]): Boolean = {

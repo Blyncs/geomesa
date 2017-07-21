@@ -16,7 +16,10 @@ import org.locationtech.geomesa.utils.collection.CloseableIterator
 
 import scala.collection.JavaConversions._
 
-class HBaseBackedMetadata[T](val connection: Connection, val catalog: TableName, val serializer: MetadataSerializer[T])
+class HBaseBackedMetadata[T](val connection: Connection,
+                             val catalog: TableName,
+                             val serializer: MetadataSerializer[T],
+                             override val doTableExistsCheck: Boolean)
     extends CachedLazyMetadata[T] with HBaseMetadataAdapter
 
 trait HBaseMetadataAdapter extends MetadataAdapter {

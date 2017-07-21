@@ -31,9 +31,11 @@ trait CachedLazyMetadata[T] extends GeoMesaMetadata[T] with LazyLogging {
 
   protected def serializer: MetadataSerializer[T]
 
+  def doTableExistsCheck: Boolean = true
+
   // only synchronize if table doesn't exist - otherwise it's ready only and we can avoid synchronization
   private val tableExists: MaybeSynchronized[Boolean] =
-    if (checkIfTableExists) { new NotSynchronized(true) } else { new IsSynchronized(false) }
+    if (!doTableExistsCheck || checkIfTableExists) { new NotSynchronized(true) } else { new IsSynchronized(false) }
 
   // cache for our metadata - invalidate every 10 minutes so we keep things current
   private val metaDataCache =

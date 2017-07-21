@@ -31,7 +31,7 @@ class HBaseDataStore(val connection: Connection, override val config: HBaseDataS
     extends HBaseDataStoreType(config) with LocalLocking {
 
   override val metadata: GeoMesaMetadata[String] =
-    new HBaseBackedMetadata(connection, TableName.valueOf(config.catalog), MetadataStringSerializer)
+    new HBaseBackedMetadata(connection, TableName.valueOf(config.catalog), MetadataStringSerializer, config.doTableExistsCheck)
 
   override def manager: HBaseIndexManagerType = HBaseFeatureIndex
 
